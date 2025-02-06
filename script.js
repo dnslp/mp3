@@ -1,42 +1,45 @@
+// ===========================
+// script.js
+// ===========================
 
-// --- AudioContext Unlock Fix for iOS ---
-// --- Create and unlock the AudioContext using a silent oscillator hack ---
+// --- AudioContext & GainNode Setup ---
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const audioElement = document.getElementById('audioPlayer');
+const mediaElementSource = audioContext.createMediaElementSource(audioElement);
+const gainNode = audioContext.createGain();
+// Connect the audio element through the gain node to the destination.
+mediaElementSource.connect(gainNode);
+gainNode.connect(audioContext.destination);
 
+// --- Unlock AudioContext on iOS using a silent oscillator hack ---
 function unlockAudioContext() {
   if (audioContext.state === 'suspended') {
     try {
-      // Create a silent oscillator and immediately stop it.
       const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      const silentGain = audioContext.createGain();
+      oscillator.connect(silentGain);
+      silentGain.connect(audioContext.destination);
       oscillator.start(0);
       oscillator.stop(0);
-      // Now attempt to resume the audio context.
       audioContext.resume().then(() => {
-        console.log("AudioContext resumed via oscillator hack.");
+        console.log('AudioContext resumed via oscillator hack.');
       }).catch((err) => {
-        console.error("AudioContext resume error:", err);
+        console.error('Error resuming AudioContext:', err);
       });
     } catch (err) {
-      console.error("Error unlocking AudioContext:", err);
+      console.error('Error unlocking AudioContext:', err);
     }
   }
 }
-
-// Attach unlocking to both touchend and click events as a fallback.
+// Attach unlocking to both touchend and click events (once)
 document.addEventListener('touchend', unlockAudioContext, { once: true });
 document.addEventListener('click', unlockAudioContext, { once: true });
 
-
-// --- The rest of your code remains largely the same ---
-
-// Sample track list with title, source, and an external album art URL.
+// --- Tracks Array ---
 const tracks = [
   {
     title: 'Talking Drums',
-    src: '/Africa-Talking-Drum-80BPM.mp3',
+    src: 'Africa-Talking-Drum-80BPM.mp3',
     albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-12.svg'
   },
   {
@@ -59,7 +62,7 @@ const tracks = [
 let currentTrackIndex = null;
 let isLooping = false;
 
-const audioPlayer = document.getElementById('audioPlayer');
+// --- DOM References ---
 const playPauseBtn = document.getElementById('playPause');
 const stopBtn = document.getElementById('stop');
 const nextBtn = document.getElementById('nextTrack');
@@ -67,39 +70,31 @@ const prevBtn = document.getElementById('prevTrack');
 const loopBtn = document.getElementById('toggleLoop');
 const volumeControl = document.getElementById('volumeControl');
 
-/**
- * Dynamically populate the grid with track icons.
- */
+// --- Populate the Track Grid Dynamically ---
 function populateTrackGrid() {
   const grid = document.querySelector('.grid');
-  grid.innerHTML = ''; // Clear existing content
+  grid.innerHTML = ''; // Clear any existing content
   tracks.forEach((track, index) => {
     const trackDiv = document.createElement('div');
     trackDiv.className = 'track-icon';
     trackDiv.dataset.index = index;
     
-    // Use the external album art URL if provided.
-    if (track.albumArtUrl) {
-      trackDiv.innerHTML = `<img src="${track.albumArtUrl}" alt="${track.title} Album Art" />`;
-    } else {
-      // Fallback to a placeholder image.
-      trackDiv.innerHTML = `<img src="https://via.placeholder.com/100?text=${encodeURIComponent(track.title)}" alt="${track.title} Album Art" />`;
-    }
+    // Use the external album art URL.
+    trackDiv.innerHTML = `<img src="${track.albumArtUrl}" alt="${track.title} Album Art" />`;
     
-    // Append the track title.
+    // Create a span element for the track title.
     const titleSpan = document.createElement('span');
     titleSpan.textContent = track.title;
     trackDiv.appendChild(titleSpan);
     
-    // Add click event listener for playback.
+    // Add a click event listener for playback.
     trackDiv.addEventListener('click', onTrackIconClick);
     
     grid.appendChild(trackDiv);
   });
 }
 
-/* --- Playback and Control Functions --- */
-
+// --- Playback & Control Functions ---
 function updatePlayPauseButton(isPlaying) {
   if (isPlaying) {
     playPauseBtn.innerHTML = `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" 
@@ -118,16 +113,16 @@ function updatePlayPauseButton(isPlaying) {
 function loadTrack(index) {
   if (index < 0 || index >= tracks.length) return;
   currentTrackIndex = index;
-  audioPlayer.src = tracks[index].src;
-  audioPlayer.loop = isLooping;
+  audioElement.src = tracks[index].src;
+  audioElement.loop = isLooping;
   // Force a reload so that iOS re-reads the file.
-  audioPlayer.load();
+  audioElement.load();
   updatePlayingVisuals();
 }
 
 function playTrack() {
-  if (audioPlayer.src) {
-    audioPlayer.play().then(() => {
+  if (audioElement.src) {
+    audioElement.play().then(() => {
       updatePlayPauseButton(true);
       updatePlayingVisuals();
     }).catch((err) => {
@@ -137,16 +132,16 @@ function playTrack() {
 }
 
 function pauseTrack() {
-  audioPlayer.pause();
+  audioElement.pause();
   updatePlayPauseButton(false);
   updatePlayingVisuals();
 }
 
 function togglePlayPause() {
-  if (!audioPlayer.src) {
+  if (!audioElement.src) {
     loadTrack(0);
     playTrack();
-  } else if (audioPlayer.paused) {
+  } else if (audioElement.paused) {
     playTrack();
   } else {
     pauseTrack();
@@ -154,8 +149,8 @@ function togglePlayPause() {
 }
 
 function stopPlayback() {
-  audioPlayer.pause();
-  audioPlayer.currentTime = 0;
+  audioElement.pause();
+  audioElement.currentTime = 0;
   updatePlayPauseButton(false);
   updatePlayingVisuals(true);
 }
@@ -174,12 +169,13 @@ function prevTrack() {
 
 function toggleLoop() {
   isLooping = !isLooping;
-  audioPlayer.loop = isLooping;
+  audioElement.loop = isLooping;
   loopBtn.style.backgroundColor = isLooping ? '#4caf50' : 'transparent';
 }
 
 function updateVolume() {
-  audioPlayer.volume = volumeControl.value;
+  // Update the gain value (volume control via the GainNode)
+  gainNode.gain.value = volumeControl.value;
   updateHeaderColor();
 }
 
@@ -201,7 +197,7 @@ function updatePlayingVisuals(reset = false) {
   const trackIcons = document.querySelectorAll('.track-icon');
   trackIcons.forEach(icon => {
     const index = parseInt(icon.getAttribute('data-index'));
-    if (!reset && index === currentTrackIndex && !audioPlayer.paused) {
+    if (!reset && index === currentTrackIndex && !audioElement.paused) {
       icon.classList.add('playing');
     } else {
       icon.classList.remove('playing');
@@ -220,19 +216,18 @@ function onTrackIconClick(e) {
   }
 }
 
-/* --- Event Listeners --- */
-
+// --- Event Listeners ---
 playPauseBtn.addEventListener('click', togglePlayPause);
 stopBtn.addEventListener('click', stopPlayback);
 nextBtn.addEventListener('click', nextTrack);
 prevBtn.addEventListener('click', prevTrack);
 loopBtn.addEventListener('click', toggleLoop);
 volumeControl.addEventListener('input', updateVolume);
-audioPlayer.addEventListener('ended', () => {
+audioElement.addEventListener('ended', () => {
   if (!isLooping) {
     nextTrack();
   }
 });
 
-// Populate the track grid when the page loads.
+// --- Populate the Track Grid on Page Load ---
 populateTrackGrid();
