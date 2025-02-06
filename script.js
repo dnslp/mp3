@@ -1,3 +1,20 @@
+// Create an AudioContext (or resume if already created)
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+// Function to ensure the AudioContext is resumed (unlocked)
+function unlockAudioContext() {
+  if (audioContext.state === 'suspended') {
+    audioContext.resume().then(() => {
+      console.log('AudioContext resumed.');
+    }).catch((err) => {
+      console.error('AudioContext resume failed:', err);
+    });
+  }
+}
+
+// Add a one-time event listener to unlock the AudioContext on first user interaction
+document.addEventListener('touchstart', unlockAudioContext, { once: true });
+
 // Sample track list with title, source, and an external album art URL.
 const tracks = [
   {
@@ -16,7 +33,7 @@ const tracks = [
     albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-8.svg'
   }
 ];
-console.log('version 1')
+console.log('version 2')
 let currentTrackIndex = null;
 let isLooping = false;
 
