@@ -16,7 +16,7 @@ const tracks = [
     albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-8.svg'
   }
 ];
-
+console.log('version 1')
 let currentTrackIndex = null;
 let isLooping = false;
 
