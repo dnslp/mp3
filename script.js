@@ -56,6 +56,21 @@ const tracks = [
     title: 'Sora',
     src: 'Jamaican-Sora-110BPM.mp3',
     albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-2.svg'
+  },
+  {
+    title: 'Klezmer',
+    src: 'Klezmer-148BPM.mp3',
+    albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-1.svg'
+  },
+  {
+    title: 'Rain',
+    src: 'Rain-100BPM.mp3',
+    albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-3.svg'
+  },
+  {
+    title: 'Scottish',
+    src: 'Scottish-95BPM.mp3',
+    albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-11.svg'
   }
 ];
 
@@ -74,25 +89,44 @@ const volumeControl = document.getElementById('volumeControl');
 function populateTrackGrid() {
   const grid = document.querySelector('.grid');
   grid.innerHTML = ''; // Clear any existing content
+
   tracks.forEach((track, index) => {
     const trackDiv = document.createElement('div');
     trackDiv.className = 'track-icon';
     trackDiv.dataset.index = index;
     
-    // Use the external album art URL.
-    trackDiv.innerHTML = `<img src="${track.albumArtUrl}" alt="${track.title} Album Art" />`;
+    // Determine the overlay letter (A for index 0, B for 1, etc.)
+    const overlayLetter = String.fromCharCode(65 + index);  // 65 is "A"
     
-    // Create a span element for the track title.
+    // Build the album art container.
+    // The album art (either from albumArtUrl or a placeholder) is wrapped in a div.
+    // Then a span with class "overlay-letter" is added on top.
+    let albumArtHtml = "";
+    if (track.albumArtUrl) {
+      albumArtHtml = `<img src="${track.albumArtUrl}" alt="${track.title} Album Art" />`;
+    } else {
+      albumArtHtml = `<img src="https://via.placeholder.com/100?text=${encodeURIComponent(track.title)}" alt="${track.title} Album Art" />`;
+    }
+    
+    trackDiv.innerHTML = `
+      <div class="album-art-container">
+        ${albumArtHtml}
+        <span class="overlay-letter">${overlayLetter}</span>
+      </div>
+    `;
+    
+    // Create and append a span for the track title below the album art.
     const titleSpan = document.createElement('span');
     titleSpan.textContent = track.title;
     trackDiv.appendChild(titleSpan);
     
-    // Add a click event listener for playback.
+    // Add click event listener for playback.
     trackDiv.addEventListener('click', onTrackIconClick);
     
     grid.appendChild(trackDiv);
   });
 }
+
 
 // --- Playback & Control Functions ---
 function updatePlayPauseButton(isPlaying) {
