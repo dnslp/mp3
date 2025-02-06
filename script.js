@@ -1,7 +1,9 @@
-// Create an AudioContext (or resume if already created)
+// --- AudioContext Unlock Fix for iOS ---
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+// Connect the audio element to the AudioContext
+const mediaElementSource = audioContext.createMediaElementSource(document.getElementById('audioPlayer'));
+mediaElementSource.connect(audioContext.destination);
 
-// Function to ensure the AudioContext is resumed (unlocked)
 function unlockAudioContext() {
   if (audioContext.state === 'suspended') {
     audioContext.resume().then(() => {
@@ -11,9 +13,10 @@ function unlockAudioContext() {
     });
   }
 }
-
-// Add a one-time event listener to unlock the AudioContext on first user interaction
+// Listen for both touchstart and click events
 document.addEventListener('touchstart', unlockAudioContext, { once: true });
+document.addEventListener('click', unlockAudioContext, { once: true });
+
 
 // Sample track list with title, source, and an external album art URL.
 const tracks = [
@@ -33,7 +36,7 @@ const tracks = [
     albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-8.svg'
   }
 ];
-console.log('version 2')
+console.log('version 3')
 let currentTrackIndex = null;
 let isLooping = false;
 
