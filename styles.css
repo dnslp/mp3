@@ -30,7 +30,7 @@
   justify-content: center;
   z-index: 100;
   /* We define a CSS variable for the overlay color; its default is a semi-transparent bright yellow */
-  --overlay-color: rgba(255,235,59,0.6);
+  --overlay-color: rgba(59, 255, 167, 0.6);
   /* Two background layers:
      1. A dynamic color overlay.
      2. The cool grainy gradient (encoded as a data URL).
@@ -40,6 +40,7 @@
     url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20version='1.1'%20viewBox='0%200%20700%20700'%3E%3Cdefs%3E%3ClinearGradient%20gradientTransform='rotate(-150,%200.5,%200.5)'%20x1='50%25'%20y1='0%25'%20x2='50%25'%20y2='100%25'%20id='gggrain-gradient2'%3E%3Cstop%20stop-color='hsla(88,92%,24%,1)'%20stop-opacity='1'%20offset='0%25'/%3E%3Cstop%20stop-color='rgba(255,255,255,0)'%20stop-opacity='0'%20offset='100%25'/%3E%3C/linearGradient%3E%3ClinearGradient%20gradientTransform='rotate(150,%200.5,%200.5)'%20x1='50%25'%20y1='0%25'%20x2='50%25'%20y2='100%25'%20id='gggrain-gradient3'%3E%3Cstop%20stop-color='hsl(89,73%,48%)'%20stop-opacity='1'/%3E%3Cstop%20stop-color='rgba(255,255,255,0)'%20stop-opacity='0'%20offset='100%25'/%3E%3C/linearGradient%3E%3Cfilter%20id='gggrain-filter'%20x='-20%25'%20y='-20%25'%20width='140%25'%20height='140%25'%20filterUnits='objectBoundingBox'%20primitiveUnits='userSpaceOnUse'%20color-interpolation-filters='sRGB'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='1.11'%20numOctaves='2'%20seed='2'%20stitchTiles='stitch'%20x='0%25'%20y='0%25'%20width='100%25'%20height='100%25'%20result='turbulence'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'%20in='turbulence'%20result='colormatrix'/%3E%3CfeComponentTransfer%20in='colormatrix'%20result='componentTransfer'%3E%3CfeFuncR%20type='linear'%20slope='3'/%3E%3CfeFuncG%20type='linear'%20slope='3'/%3E%3CfeFuncB%20type='linear'%20slope='3'/%3E%3C/feComponentTransfer%3E%3CfeColorMatrix%20in='componentTransfer'%20result='colormatrix2'%20type='matrix'%20values='1%200%200%200%200%200%201%200%200%200%200%200%201%200%200%200%200%200%2019%20-11'/%3E%3C/filter%3E%3C/defs%3E%3Cg%3E%3Crect%20width='100%25'%20height='100%25'%20fill='hsl(55,94%,54%)'/%3E%3Crect%20width='100%25'%20height='100%25'%20fill='url(%23gggrain-gradient3)'/%3E%3Crect%20width='100%25'%20height='100%25'%20fill='url(%23gggrain-gradient2)'/%3E%3Crect%20width='100%25'%20height='100%25'%20fill='transparent'%20filter='url(%23gggrain-filter)'%20opacity='0.17'%20style='mix-blend-mode:%20soft-light'/%3E%3C/g%3E%3C/svg%3E");
   background-blend-mode: multiply;
   background-size: cover;
+  transition: 2s;
 }
   
   .controls button {
@@ -130,6 +131,10 @@
     font-size: 1.2rem;
     margin-top: 5px;
     transition: 1s;
+  }
+  #loopBtn{
+    border-radius: 50px;
+
   }
   
   /* Animation for Playing Track (Rotating Effect) */

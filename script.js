@@ -97,13 +97,13 @@ function populateTrackGrid() {
 // --- Playback & Control Functions ---
 function updatePlayPauseButton(isPlaying) {
   if (isPlaying) {
-    playPauseBtn.innerHTML = `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" 
+    playPauseBtn.innerHTML = `<svg width="100" height="100" viewBox="0 0 64 64" fill="none" 
       xmlns="http://www.w3.org/2000/svg">
         <rect x="18" y="15" width="10" height="34" fill="#000"/>
         <rect x="36" y="15" width="10" height="34" fill="#000"/>
       </svg>`;
   } else {
-    playPauseBtn.innerHTML = `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" 
+    playPauseBtn.innerHTML = `<svg width="100" height="100" viewBox="0 0 64 64" fill="none" 
       xmlns="http://www.w3.org/2000/svg">
         <polygon points="20,15 20,49 50,32" fill="#000"/>
       </svg>`;
@@ -171,6 +171,9 @@ function toggleLoop() {
   isLooping = !isLooping;
   audioElement.loop = isLooping;
   loopBtn.style.backgroundColor = isLooping ? '#4caf50' : 'transparent';
+  loopBtn.style.animation = isLooping ? 'spin 4s reverse linear infinite' : null;
+  loopBtn.style.borderRadius = isLooping ? '60px' : '0px';
+
 }
 
 function updateVolume() {
@@ -180,16 +183,34 @@ function updateVolume() {
 }
 
 function updateHeaderColor() {
+  // Get the volume from the slider and snap it to the nearest tenth.
   const vol = parseFloat(volumeControl.value);
+  const discreteVol = Math.round(vol * 10) / 10;  // e.g., 0, 0.1, 0.2, ..., 1.0
+
   const controls = document.querySelector('.controls');
-  let newColor;
-  if (vol === 0) {
-    newColor = "rgba(244,67,54,0.6)"; // red for muted
-  } else if (vol < 0.5) {
-    newColor = "rgba(255,253,150,0.6)"; // soft yellow for low volume
+
+  // Define our base colors as objects.
+  const colorMuted = { r: 254, g: 0,  b: 0  };    // for volume 0.0
+  const colorMid   = { r: 255, g: 253, b: 150 };      // for volume 0.5
+  const colorHigh  = { r: 59,  g: 255, b: 167 };      // for volume 1.0
+
+  let r, g, b;
+  if (discreteVol < 0.5) {
+    // Normalize to [0,1] for the range 0 to 0.5.
+    const t = discreteVol / 0.5;
+    r = Math.round(colorMuted.r + t * (colorMid.r - colorMuted.r));
+    g = Math.round(colorMuted.g + t * (colorMid.g - colorMuted.g));
+    b = Math.round(colorMuted.b + t * (colorMid.b - colorMuted.b));
   } else {
-    newColor = "rgba(255,235,59,0.6)"; // bright yellow for medium-high volume
+    // Normalize for the range 0.5 to 1.0.
+    const t = (discreteVol - 0.5) / 0.5;
+    r = Math.round(colorMid.r + t * (colorHigh.r - colorMid.r));
+    g = Math.round(colorMid.g + t * (colorHigh.g - colorMid.g));
+    b = Math.round(colorMid.b + t * (colorHigh.b - colorMid.b));
   }
+  
+  // Construct the new color string with opacity 0.6.
+  const newColor = `rgba(${r}, ${g}, ${b}, 0.8)`;
   controls.style.setProperty('--overlay-color', newColor);
 }
 
