@@ -1,42 +1,61 @@
+
 // --- AudioContext Unlock Fix for iOS ---
+// --- Create and unlock the AudioContext using a silent oscillator hack ---
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-// Connect the audio element to the AudioContext
-const mediaElementSource = audioContext.createMediaElementSource(document.getElementById('audioPlayer'));
-mediaElementSource.connect(audioContext.destination);
 
 function unlockAudioContext() {
   if (audioContext.state === 'suspended') {
-    audioContext.resume().then(() => {
-      console.log('AudioContext resumed.');
-    }).catch((err) => {
-      console.error('AudioContext resume failed:', err);
-    });
+    try {
+      // Create a silent oscillator and immediately stop it.
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      oscillator.start(0);
+      oscillator.stop(0);
+      // Now attempt to resume the audio context.
+      audioContext.resume().then(() => {
+        console.log("AudioContext resumed via oscillator hack.");
+      }).catch((err) => {
+        console.error("AudioContext resume error:", err);
+      });
+    } catch (err) {
+      console.error("Error unlocking AudioContext:", err);
+    }
   }
 }
-// Listen for both touchstart and click events
-document.addEventListener('touchstart', unlockAudioContext, { once: true });
+
+// Attach unlocking to both touchend and click events as a fallback.
+document.addEventListener('touchend', unlockAudioContext, { once: true });
 document.addEventListener('click', unlockAudioContext, { once: true });
 
+
+// --- The rest of your code remains largely the same ---
 
 // Sample track list with title, source, and an external album art URL.
 const tracks = [
   {
     title: 'Talking Drums',
-    src: 'https://od.lk/s/ODNfODgzMTAxMjRf/african-talking-drums-80BPM.mp3',
+    src: '/Africa-Talking-Drum-80BPM.mp3',
     albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-12.svg'
   },
   {
     title: 'Darbouka',
-    src: 'https://od.lk/s/ODNfODg2MzgzMTJf/Darbouka-101BPM.mp3',
+    src: 'Darbouka-101BPM.mp3',
     albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-10.svg'
   },
   {
     title: 'Pakawaj',
-    src: 'https://od.lk/s/ODNfODg2MzgyNzJf/Indian-Pakawaj-70BPM.mp3',
+    src: 'Indian-Pakawaj-70BPM.mp3',
     albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-8.svg'
+  },
+  {
+    title: 'Sora',
+    src: 'Jamaican-Sora-110BPM.mp3',
+    albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-2.svg'
   }
 ];
-console.log('version 3')
+
 let currentTrackIndex = null;
 let isLooping = false;
 
@@ -101,14 +120,19 @@ function loadTrack(index) {
   currentTrackIndex = index;
   audioPlayer.src = tracks[index].src;
   audioPlayer.loop = isLooping;
+  // Force a reload so that iOS re-reads the file.
+  audioPlayer.load();
   updatePlayingVisuals();
 }
 
 function playTrack() {
   if (audioPlayer.src) {
-    audioPlayer.play();
-    updatePlayPauseButton(true);
-    updatePlayingVisuals();
+    audioPlayer.play().then(() => {
+      updatePlayPauseButton(true);
+      updatePlayingVisuals();
+    }).catch((err) => {
+      console.error("Error during playback:", err);
+    });
   }
 }
 
@@ -194,17 +218,6 @@ function onTrackIconClick(e) {
     loadTrack(index);
     playTrack();
   }
-}
-
-/* --- Unlock Audio on iOS --- */
-// Add a one-time touch event to unlock audio playback
-document.addEventListener('touchstart', unlockAudio, { once: true });
-function unlockAudio() {
-  audioPlayer.play().then(() => {
-    audioPlayer.pause();
-  }).catch((err) => {
-    console.error("Audio unlock error:", err);
-  });
 }
 
 /* --- Event Listeners --- */
