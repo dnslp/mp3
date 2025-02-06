@@ -30,10 +30,6 @@ const volumeControl = document.getElementById('volumeControl');
 
 /**
  * Dynamically populate the grid with track icons.
- * Each track icon will have:
- *   - An album art image (using albumArtUrl)
- *   - A span showing the track title
- *   - A data-index attribute to associate it with a track
  */
 function populateTrackGrid() {
   const grid = document.querySelector('.grid');
@@ -47,7 +43,7 @@ function populateTrackGrid() {
     if (track.albumArtUrl) {
       trackDiv.innerHTML = `<img src="${track.albumArtUrl}" alt="${track.title} Album Art" />`;
     } else {
-      // Fallback to a placeholder if no albumArtUrl exists.
+      // Fallback to a placeholder image.
       trackDiv.innerHTML = `<img src="https://via.placeholder.com/100?text=${encodeURIComponent(track.title)}" alt="${track.title} Album Art" />`;
     }
     
@@ -56,7 +52,7 @@ function populateTrackGrid() {
     titleSpan.textContent = track.title;
     trackDiv.appendChild(titleSpan);
     
-    // Add a click event listener to the track icon.
+    // Add click event listener for playback.
     trackDiv.addEventListener('click', onTrackIconClick);
     
     grid.appendChild(trackDiv);
@@ -178,6 +174,17 @@ function onTrackIconClick(e) {
     loadTrack(index);
     playTrack();
   }
+}
+
+/* --- Unlock Audio on iOS --- */
+// Add a one-time touch event to unlock audio playback
+document.addEventListener('touchstart', unlockAudio, { once: true });
+function unlockAudio() {
+  audioPlayer.play().then(() => {
+    audioPlayer.pause();
+  }).catch((err) => {
+    console.error("Audio unlock error:", err);
+  });
 }
 
 /* --- Event Listeners --- */
