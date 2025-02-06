@@ -1,26 +1,34 @@
 /* Global Styles */
 * {
-    box-sizing: border-box;
-  }
-  @font-face {
-    font-family: 'OpenDyslexic';
-    src: url('OpenDyslexic3-Regular.ttf') format('truetype');
+  box-sizing: border-box;
 }
-  body {
-    margin: 0;
-    font-family: 'OpenDyslexic';
-    background-color: #f0f0f0; /* Light background for high contrast */
-    color: #000;
-  }
-  
-  /* Visually Hidden Text for Accessibility */
-  .visually-hidden {
-    position: absolute;
-    left: -9999px;
-  }
-  
-  /* Sticky Control Bar */
-/* --- Controls Header with a Grainy Gradient & Dynamic Overlay --- */
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('OpenDyslexic3-Regular.ttf') format('truetype');
+}
+
+body {
+  margin: 0;
+  font-family: 'OpenDyslexic';
+  background-color: #f0f0f0; /* Light background for high contrast */
+  color: #000;
+}
+
+/* Visually Hidden Text for Accessibility */
+.visually-hidden {
+  position: absolute;
+  left: -9999px;
+}
+
+/* Container for centering (optional) */
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* --- Sticky Control Bar with Grainy Gradient & Dynamic Overlay --- */
 .controls {
   position: sticky;
   top: 0;
@@ -29,135 +37,123 @@
   align-items: center;
   justify-content: center;
   z-index: 100;
-  /* We define a CSS variable for the overlay color; its default is a semi-transparent bright yellow */
   --overlay-color: rgba(59, 255, 167, 0.6);
-  /* Two background layers:
-     1. A dynamic color overlay.
-     2. The cool grainy gradient (encoded as a data URL).
-  */
-  background: 
-    linear-gradient(var(--overlay-color), var(--overlay-color)),
+  background: linear-gradient(var(--overlay-color), var(--overlay-color)),
     url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20version='1.1'%20viewBox='0%200%20700%20700'%3E%3Cdefs%3E%3ClinearGradient%20gradientTransform='rotate(-150,%200.5,%200.5)'%20x1='50%25'%20y1='0%25'%20x2='50%25'%20y2='100%25'%20id='gggrain-gradient2'%3E%3Cstop%20stop-color='hsla(88,92%,24%,1)'%20stop-opacity='1'%20offset='0%25'/%3E%3Cstop%20stop-color='rgba(255,255,255,0)'%20stop-opacity='0'%20offset='100%25'/%3E%3C/linearGradient%3E%3ClinearGradient%20gradientTransform='rotate(150,%200.5,%200.5)'%20x1='50%25'%20y1='0%25'%20x2='50%25'%20y2='100%25'%20id='gggrain-gradient3'%3E%3Cstop%20stop-color='hsl(89,73%,48%)'%20stop-opacity='1'/%3E%3Cstop%20stop-color='rgba(255,255,255,0)'%20stop-opacity='0'%20offset='100%25'/%3E%3C/linearGradient%3E%3Cfilter%20id='gggrain-filter'%20x='-20%25'%20y='-20%25'%20width='140%25'%20height='140%25'%20filterUnits='objectBoundingBox'%20primitiveUnits='userSpaceOnUse'%20color-interpolation-filters='sRGB'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='1.11'%20numOctaves='2'%20seed='2'%20stitchTiles='stitch'%20x='0%25'%20y='0%25'%20width='100%25'%20height='100%25'%20result='turbulence'/%3E%3CfeColorMatrix%20type='saturate'%20values='0'%20in='turbulence'%20result='colormatrix'/%3E%3CfeComponentTransfer%20in='colormatrix'%20result='componentTransfer'%3E%3CfeFuncR%20type='linear'%20slope='3'/%3E%3CfeFuncG%20type='linear'%20slope='3'/%3E%3CfeFuncB%20type='linear'%20slope='3'/%3E%3C/feComponentTransfer%3E%3CfeColorMatrix%20in='componentTransfer'%20result='colormatrix2'%20type='matrix'%20values='1%200%200%200%200%200%201%200%200%200%200%200%201%200%200%200%200%200%2019%20-11'/%3E%3C/filter%3E%3C/defs%3E%3Cg%3E%3Crect%20width='100%25'%20height='100%25'%20fill='hsl(55,94%,54%)'/%3E%3Crect%20width='100%25'%20height='100%25'%20fill='url(%23gggrain-gradient3)'/%3E%3Crect%20width='100%25'%20height='100%25'%20fill='url(%23gggrain-gradient2)'/%3E%3Crect%20width='100%25'%20height='100%25'%20fill='transparent'%20filter='url(%23gggrain-filter)'%20opacity='0.17'%20style='mix-blend-mode:%20soft-light'/%3E%3C/g%3E%3C/svg%3E");
   background-blend-mode: multiply;
   background-size: cover;
-  transition: 2s;
+  transition: background-color 2s;
 }
-  
-  .controls button {
-    background: none;
-    border: none;
-    margin: 0 10px;
-    cursor: pointer;
-    transition: transform 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .controls button:active {
-    transform: scale(1.1);
-  }
-  
-  /* Enhanced Volume Slider Styling */
-  #volumeControl {
-    width: 400px;
-    height: 30px;
-    -webkit-appearance: none;
-    appearance: none;
-    background: #ddd;
-    outline: none;
-    border-radius: 5px;
-    margin-left: 10px;
-    border: 2px solid black;
-    border-radius: 3px;
-  }
-  
-  #volumeControl::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 70px;
-    height: 70px;
-    background: #4caf50;
-    border: 4px solid #000;
-    border-radius: 50%;
-    cursor: pointer;
-    margin-top: -5px; /* Centers the thumb on the slider track */
-  }
-  
-  #volumeControl::-moz-range-thumb {
-    width: 60px;
-    height: 60px;
-    background: #4caf50;
-    border: 2px solid #000;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-  
-  /* Grid Layout for Track Icons */
-  .grid {
-    display: flex;
-    flex-wrap: wrap;            /* Allow items to wrap onto new lines */
-    gap: 20px;                  /* Space between grid items */
-    padding: 20px;
-    justify-content: center;    /* Center items on each row (alternatively, space-between/space-around) */
-  }
-  
-  /* Make each track icon flexible */
-  .track-icon {
-          /* Grow and shrink as needed; 200px is the base width */
-    max-width: 500px;           /* Optional: limit how wide each item can get */
-  }
-  
-  .track-icon:hover {
 
-    transform: scale(1.05);
-    transition: 1s;
-  }
-  
-  .track-icon svg,
-  .track-icon img {
-    display: block;
-    margin: 0 auto;
-    /* Force a consistent size for album art (including custom SVGs) */
-    width: 500px;
-    height:500px;
-    transition: 1s;
-  }
-  
-  .track-icon span {
-    display: block;
+.controls button {
+  background: none;
+  border: none;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.controls button:active {
+  transform: scale(1.1);
+}
 
-    margin-top: 5px;
-    transition: 1s;
-  }
- .track-icon span {
-    font-size: 30px;
-  }
-  .overlay-letter{
-    font-size: 8rem !important;
-    -webkit-text-stroke: 2px black; /* width and color */
+/* Enhanced Volume Slider Styling */
+#volumeControl {
+  width: 400px;
+  height: 30px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #ddd;
+  outline: none;
+  border: 2px solid black;
+  border-radius: 3px;
+  margin-left: 10px;
+}
 
+#volumeControl::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 70px;
+  height: 70px;
+  background: #4caf50;
+  border: 4px solid #000;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -5px;
+}
 
-  }
-  #loopBtn{
-    border-radius: 50px;
+#volumeControl::-moz-range-thumb {
+  width: 60px;
+  height: 60px;
+  background: #4caf50;
+  border: 2px solid #000;
+  border-radius: 50%;
+  cursor: pointer;
+}
 
-  }
-  /* Album art container wraps the image and overlay letter */
+/* Grid Layout for Track Icons using Flexbox */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Each track icon fills a portion of the width */
+.track-icon {
+  flex: 1 1 calc(25% - 40px);  /* Four items per row minus gaps */
+  max-width: calc(25% - 40px);
+  background-color: #fff;
+  /* border: 2px solid #000; */
+  border-radius: 10px;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 0.8s, background-color 0.3s;
+  box-sizing: border-box;
+}
+.track-icon:hover {
+  transform: scale(1.05);
+  transition: 1s;
+  border: 4px solid black;
+  box-sizing: border-box;
+  transition: transform 0.8s;
+}
+
+/* Album Art Container and Overlay Letter */
 .album-art-container {
   position: relative;
-  width: 400px;
-  height: 400px;
+  width: 100%;
+  padding-top: 100%; /* This creates a square container */
 }
-
-/* Ensure the album art image fills the container */
 .album-art-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  display: block;
+  object-fit: cover;
+}
+.overlay-letter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 5em;
+  font-weight: bold;
+  pointer-events: none;
 }
 
-/* Overlay letter positioned in the center */
+/* Track Title */
+.track-icon span {
+  display: block;
+  font-size: 1.4em;
+}
 .overlay-letter {
   position: absolute;
   top: 50%;
@@ -166,20 +162,86 @@
   color: white;            /* White letter (change as desired) */
   font-size: 5em;          /* Adjust size as needed */
   font-weight: bold;
-  pointer-events: none;    /* Allows clicks to pass through to the underlying container */
+  pointer-events: none;  
+  font-size: 8rem !important;
+  -webkit-text-stroke: 2px black; /* width and color */
+/* Allows clicks to pass through to the underlying container */
 }
 
-  
-  /* Animation for Playing Track (Rotating Effect) */
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+/* Animation for Playing Track (Rotating Effect) */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.track-icon.playing img,
+.track-icon.playing svg {
+  animation: spin 2s linear infinite;
+  border-radius: 50%;
+  transition: 1s;
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 800px) {
+  /* Scale down the sticky controls */
+  .controls {
+    padding: 5px;  /* Reduce overall padding */
+  }
+  .controls button {
+    margin: 0 5px; /* Reduce spacing between buttons */
+  }
+  .controls button svg {
+    width: 45px;   /* Scale down SVG icons */
+    height: 45px;
   }
   
-  .track-icon.playing svg,
-  .track-icon.playing img {
-    animation: spin 2s linear infinite;
+  /* Grid adjustments for mobile */
+  .grid {
+    gap: 10px;
+    padding: 10px;
+    justify-content: center;
+  }
+  .track-icon {
+    flex: 1 1 calc(50% - 20px); /* Two items per row */
+    max-width: calc(50% - 20px);
+  }
+  
+  /* Album art container remains square */
+  .album-art-container {
+    padding-top: 100%;
+  }
+  
+  /* Overlay letter size scaled down */
+  .overlay-letter {
+    font-size: 6em;
+  }
+  
+  /* Track title font size adjustment */
+  .track-icon span {
+    font-size: 1rem;
+  }
+  
+  /* Volume slider width reduced */
+  #volumeControl {
+    width: 200px;
+  }
+  #volumeControl::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 40px;
+    height: 40px;
+    background: #4caf50;
+    border: 4px solid #000;
     border-radius: 50%;
-    transition: 1s;
+    cursor: pointer;
+    margin-top: -5px;
   }
   
+  #volumeControl::-moz-range-thumb {
+    width: 40px;
+    height: 40px;
+    background: #4caf50;
+    border: 2px solid #000;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}

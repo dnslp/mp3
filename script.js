@@ -45,22 +45,17 @@ const tracks = [
   {
     title: 'Darbouka',
     src: 'Darbouka-101BPM.mp3',
-    albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-10.svg'
-  },
-  {
-    title: 'Pakawaj',
-    src: 'Indian-Pakawaj-70BPM.mp3',
-    albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-8.svg'
+    albumArtUrl: 'orange.png'
   },
   {
     title: 'Sora',
     src: 'Jamaican-Sora-110BPM.mp3',
-    albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-2.svg'
+    albumArtUrl: 'purple.png'
   },
   {
     title: 'Klezmer',
     src: 'Klezmer-148BPM.mp3',
-    albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-1.svg'
+    albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-5.svg'
   },
   {
     title: 'Rain',
@@ -70,8 +65,13 @@ const tracks = [
   {
     title: 'Scottish',
     src: 'Scottish-95BPM.mp3',
-    albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-11.svg'
-  }
+    albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-9.svg'
+  },
+  {
+    title: 'Pakawaj',
+    src: 'Indian-Pakawaj-70BPM.mp3',
+    albumArtUrl: 'https://www.fffuel.co/images/ffflux/ffflux-8.svg'
+  },
 ];
 
 let currentTrackIndex = null;
