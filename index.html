@@ -1,1 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accessible MP3 Player</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <!-- Sticky Control Bar -->
+  <div class="controls">
+    <!-- Previous Track Button -->
+    <button id="prevTrack" aria-label="Previous Track">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" 
+           xmlns="http://www.w3.org/2000/svg">
+        <polygon points="48,15 48,49 24,32" fill="#000"/>
+        <rect x="18" y="15" width="6" height="34" fill="#000"/>
+      </svg>
+    </button>
+
+    <!-- Play/Pause Button (icon swapped via JS) -->
+    <button id="playPause" aria-label="Play/Pause">
+      <!-- Initially using the Play icon -->
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" 
+           xmlns="http://www.w3.org/2000/svg">
+        <polygon points="20,15 20,49 50,32" fill="#000"/>
+      </svg>
+    </button>
+
+    <!-- Stop Button -->
+    <button id="stop" aria-label="Stop">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" 
+           xmlns="http://www.w3.org/2000/svg">
+        <rect x="18" y="18" width="28" height="28" fill="#000"/>
+      </svg>
+    </button>
+
+    <!-- Next Track Button -->
+    <button id="nextTrack" aria-label="Next Track">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" 
+           xmlns="http://www.w3.org/2000/svg">
+        <polygon points="16,15 16,49 40,32" fill="#000"/>
+        <rect x="44" y="15" width="6" height="34" fill="#000"/>
+      </svg>
+    </button>
+
+    <!-- Loop Button -->
+    <button id="toggleLoop" aria-label="Toggle Loop">
+      <svg id="loopIcon" width="64" height="64" viewBox="0 0 64 64" fill="none" 
+           xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 24a12 12 0 0 1 12-12h12" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+        <polyline points="48,12 48,24 36,24" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M44 40a12 12 0 0 1-12 12H20" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+        <polyline points="16,52 16,40 28,40" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- Volume Slider with Enhanced Styling -->
+    <label for="volumeControl" class="visually-hidden">Volume</label>
+    <input id="volumeControl" type="range" min="0" max="1" step="0.01" value="1" />
+  </div>
+  <!-- Grid of Track Icons -->
+  <div class="grid"></div>
+
+  <!-- Hidden audio element -->
+  <audio id="audioPlayer"></audio>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
 
