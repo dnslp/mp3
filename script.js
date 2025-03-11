@@ -96,7 +96,8 @@ function populateTrackGrid() {
     trackDiv.dataset.index = index;
     
     // Determine the overlay letter (A for index 0, B for 1, etc.)
-    const overlayLetter = String.fromCharCode(65 + index);  // 65 is "A"
+    const overlayLetter = String(index); 
+        // const overlayLetter = String.fromCharCode(65 + index);  // 65 is "A"
     
     // Build the album art container.
     // The album art (either from albumArtUrl or a placeholder) is wrapped in a div.
